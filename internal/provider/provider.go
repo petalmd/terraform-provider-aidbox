@@ -56,7 +56,7 @@ func (p *AidboxProvider) Schema(ctx context.Context, req provider.SchemaRequest,
 				Optional:            true,
 			},
 			"token": schema.StringAttribute{
-				MarkdownDescription: "Aidbox token",
+				MarkdownDescription: "Aidbox API token",
 				Optional:            true,
 			},
 		},
@@ -80,13 +80,13 @@ func (p *AidboxProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 	// Handle token; get from environment variable if not provided
 	if data.Token.IsNull() || data.Token.IsUnknown() || data.Token.ValueString() == "" {
-		tokenEnv := os.Getenv("AIDBOX_TOKEN")
+		tokenEnv := os.Getenv("AIDBOX_API_TOKEN")
 		if tokenEnv != "" {
 			data.Token = basetypes.NewStringValue(tokenEnv)
 		} else {
 			resp.Diagnostics.AddError(
-				"No Token Provided",
-				"Please provide a 'token' in the provider configuration or through the 'AIDBOX_TOKEN' environment variable.",
+				"No API Token Provided",
+				"Please provide a 'token' in the provider configuration or through the 'AIDBOX_API_TOKEN' environment variable.",
 			)
 			return
 		}
