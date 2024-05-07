@@ -36,7 +36,6 @@ type Client interface {
 	DeleteLicense(ctx context.Context, licenseID string) error
 }
 
-// This structure holds the configuration data which can be used across resources
 type ProviderData struct {
 	Endpoint string
 	Token    string

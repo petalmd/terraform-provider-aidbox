@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -89,7 +89,7 @@ func (c *HTTPClient) CreateLicense(ctx context.Context, name, product, licenseTy
 		"type":    licenseType,
 	}
 
-	bodyBytes, _, err := c.makeAPICall(ctx, "portal.portal/issue-license", params)
+	bodyBytes, err := c.makeAPICall(ctx, "portal.portal/issue-license", params)
 	if err != nil {
 		return LicenseResponse{}, err
 	}
@@ -110,7 +110,7 @@ func (c *HTTPClient) GetLicense(ctx context.Context, licenseID string) (LicenseR
 		"id":    licenseID,
 	}
 
-	bodyBytes, _, err := c.makeAPICall(ctx, "portal.portal/get-license", params)
+	bodyBytes, err := c.makeAPICall(ctx, "portal.portal/get-license", params)
 	if err != nil {
 		if strings.Contains(err.Error(), "You are not a member of the project") {
 			// Interpret as the license not existing; return empty response without error
@@ -131,14 +131,14 @@ func (c *HTTPClient) GetLicense(ctx context.Context, licenseID string) (LicenseR
 }
 
 func (c *HTTPClient) DeleteLicense(ctx context.Context, licenseID string) error {
-	_, _, err := c.makeAPICall(ctx, "portal.portal/remove-license", map[string]interface{}{
+	_, err := c.makeAPICall(ctx, "portal.portal/remove-license", map[string]interface{}{
 		"token": c.Token,
 		"id":    licenseID,
 	})
 	return err
 }
 
-func (c *HTTPClient) makeAPICall(ctx context.Context, method string, params map[string]interface{}) ([]byte, int, error) {
+func (c *HTTPClient) makeAPICall(ctx context.Context, method string, params map[string]interface{}) ([]byte, error) {
 	requestBody := map[string]interface{}{
 		"method": method,
 		"params": params,
@@ -147,13 +147,13 @@ func (c *HTTPClient) makeAPICall(ctx context.Context, method string, params map[
 	yamlData, err := yaml.Marshal(requestBody)
 	if err != nil {
 		tflog.Error(ctx, "Failed to create YAML request body", map[string]interface{}{"error": err})
-		return nil, 0, fmt.Errorf("failed to create YAML request body: %w", err)
+		return nil, fmt.Errorf("failed to create YAML request body: %w", err)
 	}
 
 	req, err := http.NewRequest("POST", c.Endpoint, strings.NewReader(string(yamlData)))
 	if err != nil {
 		tflog.Error(ctx, "Failed to create HTTP request", map[string]interface{}{"error": err})
-		return nil, 0, fmt.Errorf("failed to create HTTP request: %w", err)
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	req.Header.Set("Content-Type", "text/yaml")
 	req.Header.Set("Accept", "text/yaml")
@@ -161,14 +161,14 @@ func (c *HTTPClient) makeAPICall(ctx context.Context, method string, params map[
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		tflog.Error(ctx, "API call failed", map[string]interface{}{"error": err})
-		return nil, resp.StatusCode, fmt.Errorf("API call failed: %w", err)
+		return nil, fmt.Errorf("API call failed: %w", err)
 	}
 	defer resp.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		tflog.Error(ctx, "Failed to read response body", map[string]interface{}{"error": err})
-		return nil, resp.StatusCode, fmt.Errorf("failed to read response body: %w", err)
+		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
@@ -176,10 +176,10 @@ func (c *HTTPClient) makeAPICall(ctx context.Context, method string, params map[
 			"status": resp.Status,
 			"body":   string(bodyBytes),
 		})
-		return nil, resp.StatusCode, fmt.Errorf("API response error: %s; Body: %s", resp.Status, string(bodyBytes))
+		return nil, fmt.Errorf("API response error: %s; Body: %s", resp.Status, string(bodyBytes))
 	}
 
-	return bodyBytes, resp.StatusCode, nil
+	return bodyBytes, nil
 }
 
 func parseYAMLResponse(bodyBytes []byte) (LicenseResponse, error) {
