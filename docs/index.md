@@ -33,4 +33,4 @@ provider "aidbox" {
 ### Optional
 
 - `endpoint` (String) Aidbox RPC API endpoint
-- `token` (String) Aidbox token
+- `token` (String) Aidbox API token
