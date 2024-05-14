@@ -60,6 +60,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      AIDBOX_API_TOKEN: ${{ secrets.AIDBOX_API_TOKEN }}
     strategy:
       fail-fast: false
       matrix:

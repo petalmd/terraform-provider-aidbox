@@ -1,14 +1,14 @@
-module github.com/hashicorp/terraform-provider-scaffolding-framework
+module terraform-provider-aidbox
 
 go 1.21
 
 require (
-	github.com/hashicorp/go-version v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.19.2
 	github.com/hashicorp/terraform-plugin-framework v1.8.0
 	github.com/hashicorp/terraform-plugin-go v0.23.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
 	github.com/hashicorp/terraform-plugin-testing v1.7.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -37,6 +37,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-plugin v1.6.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/hc-install v0.6.4 // indirect
 	github.com/hashicorp/hcl/v2 v2.20.0 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
@@ -79,5 +80,4 @@ require (
 	google.golang.org/grpc v1.63.2 // indirect
 	google.golang.org/protobuf v1.34.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
