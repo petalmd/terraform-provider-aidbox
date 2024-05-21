@@ -60,8 +60,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      AIDBOX_API_TOKEN: ${{ secrets.AIDBOX_API_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -85,5 +83,6 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
+          AIDBOX_API_TOKEN: ${{ secrets.AIDBOX_API_TOKEN }}
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10
