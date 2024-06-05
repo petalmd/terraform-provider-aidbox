@@ -17,10 +17,10 @@ func TestAccAidboxLicenseResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
-				Config: testAccAidboxLicenseResourceConfig("license-one", "standard"),
+				Config: testAccAidboxLicenseResourceConfig("license-one", "development"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("aidbox_license.test", "name", "license-one"),
-					resource.TestCheckResourceAttr("aidbox_license.test", "type", "standard"),
+					resource.TestCheckResourceAttr("aidbox_license.test", "type", "development"),
 				),
 			},
 			// ImportState testing
@@ -31,10 +31,10 @@ func TestAccAidboxLicenseResource(t *testing.T) {
 			},
 			// Update and Read testing
 			{
-				Config: testAccAidboxLicenseResourceConfig("license-two", "standard"),
+				Config: testAccAidboxLicenseResourceConfig("license-two", "development"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("aidbox_license.test", "name", "license-two"),
-					resource.TestCheckResourceAttr("aidbox_license.test", "type", "standard"),
+					resource.TestCheckResourceAttr("aidbox_license.test", "type", "development"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
