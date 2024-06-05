@@ -1,4 +1,4 @@
 resource "aidbox_license" "example" {
   name = "my-license"
-  type = "standard"
+  type = "development"
 }
