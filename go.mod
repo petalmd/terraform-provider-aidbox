@@ -1,7 +1,8 @@
 module terraform-provider-aidbox
 
-go 1.22.0
-toolchain go1.22.9
+go 1.22.7
+
+toolchain go1.23.2
 
 require (
 	github.com/hashicorp/terraform-plugin-docs v0.20.0
